@@ -8,7 +8,8 @@
   },
   "scripts": {
     "dev": "node --watch server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "echo 'Build Success'" 
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
