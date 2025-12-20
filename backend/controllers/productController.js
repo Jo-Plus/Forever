@@ -9,16 +9,28 @@ const addProduct = asyncHandler(async (req, res) => {
     const image2 = req.files.image2 && req.files.image2[0];
     const image3 = req.files.image3 && req.files.image3[0];
     const image4 = req.files.image4 && req.files.image4[0];
+
     const images = [image1, image2, image3, image4].filter((item) => item !== undefined);
+
     if (images.length === 0) {
-      return res.status(400).json({ success: false, message: "At least one image is required" });
+        return res.status(400).json({ success: false, message: "At least one image is required" });
     }
+
     let imagesUrl = await Promise.all(
-      images.map(async (item) => {
-        let result = await cloudinary.uploader.upload(item.path, { resource_type: 'image' });
-        return result.secure_url;
-      })
+        images.map(async (item) => {
+            return new Promise((resolve, reject) => {
+                const stream = cloudinary.uploader.upload_stream(
+                    { resource_type: 'image', folder: 'products' },
+                    (error, result) => {
+                        if (error) reject(error);
+                        else resolve(result.secure_url);
+                    }
+                );
+                stream.end(item.buffer); 
+            });
+        })
     );
+
     const productData = {
         name,
         description,
@@ -30,6 +42,7 @@ const addProduct = asyncHandler(async (req, res) => {
         images: imagesUrl,
         date: Date.now(),
     };
+
     const product = new productModel(productData);
     await product.save();
     res.json({ success: true, message: "Product Added Successfully" });
