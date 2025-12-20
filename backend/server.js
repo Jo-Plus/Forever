@@ -23,7 +23,7 @@ app.use('/api/product', productRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/order', orderRoutes);
 
-app.get('/', (req, res) => res.send('API Working'));
+app.get('/', (req, res) => res.send('API Working Successfully on Vercel'));
 
 app.use(notFound);
 app.use(errorHandler);
