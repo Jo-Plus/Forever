@@ -106,15 +106,15 @@ const placeOrderRazorpay = async (req, res) => {};
 // ===============================
 const verifyStripe = asyncHandler(async (req, res) => {
   const { orderId, success, userId } = req.body;
+  
   if (success === "true") {
     await orderModel.findByIdAndUpdate(orderId, { payment: true });
     await userModel.findByIdAndUpdate(userId, { cartData: {} });
-    res.json({ success: true });
+    return res.json({ success: true });
   } else {
     await orderModel.findByIdAndDelete(orderId);
-    res.json({ success: false });
+    return res.json({ success: false });
   }
-  res.json({ success: false, message: "Razorpay not implemented yet" });
 });
 
 // ===============================
